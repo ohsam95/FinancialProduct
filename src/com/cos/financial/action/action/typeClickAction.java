@@ -1,0 +1,43 @@
+package com.cos.financial.action.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.cos.financial.action.Action;
+import com.cos.financial.model.Bank;
+import com.cos.financial.model.FinancialProduct;
+import com.cos.financial.model.TypeList;
+import com.cos.financial.repository.FinancialRepository;
+import com.google.gson.Gson;
+
+public class typeClickAction implements Action{
+	@Override
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			
+		String bankname = request.getParameter("bankname");
+		String producttype = request.getParameter("producttype");
+		
+		System.out.println(bankname +"    "+producttype);
+		
+		FinancialRepository financialRepository = FinancialRepository.getinstance();
+		List<FinancialProduct>financialProducts  = financialRepository.typeClick(bankname, producttype);
+		
+		System.out.println(financialProducts.get(0).getBankname());
+		
+//		request.setAttribute("typeLists", typeLists);
+
+		Gson gson = new Gson();
+		String financialProductJson = gson.toJson(financialProducts);
+
+		
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		out.println(financialProductJson);
+	}
+}
